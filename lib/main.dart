@@ -3,59 +3,97 @@ import 'package:flutter/material.dart';
 void main(){
   runApp(MyApp());
 }
-class MyApp extends StatelessWidget{
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home:
-
-      homePage(),
-    );
+      home: HomePage(),);
   }
 }
-class homePage extends StatelessWidget{
-  final List<ShoppingItem> shoppingItems = [
-    ShoppingItem(name: 'Apples', icon: Icons.shopping_basket),
-    ShoppingItem(name: 'Bananas', icon: Icons.shopping_basket),
-    ShoppingItem(name: 'Milk', icon: Icons.shopping_cart),
-    ShoppingItem(name: 'Bread', icon: Icons.shopping_cart),
-    ShoppingItem(name: 'Eggs', icon: Icons.shopping_cart),
-  ];
+class HomePage extends StatefulWidget {
+  @override
+  _HomePage createState() => _HomePage();
+}
+
+class _HomePage extends State<HomePage> {
+  int count = 0;
+
+  void _incrementCount() {
+    setState(() {
+      count++;
+      if (count >= 5) {
+        _showDialog();
+      }
+    });
+  }
+
+  void _decrementCount() {
+    setState(() {
+      if (count > 0) {
+        count--;
+      }
+    });
+  }
+
+  void _showDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Button pressed $count times."),
+          actions: <Widget>[
+            TextButton(
+              child: Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('My Shopping List'),
-        centerTitle: true,
-        actions: [
-          Icon(Icons.shopping_cart),
-        ],
+        title: Text('Counter App'),
       ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Count:',
+              style: TextStyle(fontSize: 35),
+            ),
+            Text(
+              '$count',
+              style: TextStyle(fontSize: 70, fontWeight: FontWeight.bold),
+            ),
 
-      // Body Starts
-
-      body: ListView.builder(
-        itemCount: shoppingItems.length,
-        itemBuilder: (context, index) {
-          final item = shoppingItems[index];
-          return ListTile(
-            leading: Icon(item.icon),
-            title: Text(item.name),
-            onTap: () {
-              // Implement item tap functionality here
-            },
-          );
-        },
+            SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                ElevatedButton(
+                  onPressed: _decrementCount,
+                  child: Text('-',style: TextStyle(fontSize: 35),),
+                ),
+                SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: _incrementCount,
+                  child: Text('+',style: TextStyle(fontSize: 35),),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
-}
-
-class ShoppingItem {
-  final String name;
-  final IconData icon;
-
-  ShoppingItem({required this.name, required this.icon});
 }
